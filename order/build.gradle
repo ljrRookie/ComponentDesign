@@ -4,7 +4,7 @@ if (isRelease) { // 如果是发布版本时，各个模块都不能独立运行
     apply plugin: 'com.android.application'
 }
 def rootAndroidId = rootProject.ext.androidId
-def addId = rootProject.ext.appId
+def appId = rootProject.ext.appId
 def support = rootProject.ext.dependencies
 android {
     compileSdkVersion rootAndroidId.compileSdkVersion
