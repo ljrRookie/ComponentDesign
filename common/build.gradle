@@ -1,14 +1,16 @@
 apply plugin: 'com.android.library'
-
+def rootAndroidId = rootProject.ext.androidId
+def appId = rootProject.ext.appId
+def support = rootProject.ext.dependencies
 android {
-    compileSdkVersion 28
+    compileSdkVersion rootAndroidId.compileSdkVersion
 
 
     defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion rootAndroidId.minSdkVersion
+        targetSdkVersion rootAndroidId.targetSdkVersion
+        versionCode rootAndroidId.versionCode
+        versionName rootAndroidId.versionName
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -26,9 +28,17 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    implementation 'org.jetbrains:annotations-java5:15.0'
+    // 标准写法
+    // implementation group: 'com.android.support', name:'appcompat-v7',
+    // 简写
+    // implementation 'com.android.support:appcompat-v7:28.0.0'
+    // 依赖library库
+
+    // implementation support.appcompat
+    // implementation support.recyclerview
+    // implementation support.constraint
+// 依赖第三方库最简洁的方式： 循环引入第三方
+    support.each { k, v -> api v }
+    api project(path: ':skin_library')
+    api 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.44'
 }

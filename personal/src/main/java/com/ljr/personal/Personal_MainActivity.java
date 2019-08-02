@@ -2,15 +2,27 @@ package com.ljr.personal;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 
 import com.ljr.common.RecordPathManager;
 import com.ljr.common.base.BaseActivity;
 import com.ljr.common.utils.Cons;
+import com.ljr.skin_library.base.SkinActivity;
+import com.ljr.skin_library.utils.PreferencesUtils;
+
+import java.io.File;
 
 
-public class Personal_MainActivity extends BaseActivity {
+public class Personal_MainActivity  extends SkinActivity {
+
+    private String skinPath;
+
+    @Override
+    protected boolean openChangeSkin() {
+        return true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +32,14 @@ public class Personal_MainActivity extends BaseActivity {
         if (getIntent() != null) {
             String content = getIntent().getStringExtra("name");
             Log.e(Cons.TAG, "接收参数值：" + content);
+        }
+        // File.separator含义：拼接 /
+        skinPath = Environment.getExternalStorageDirectory().getAbsolutePath()
+                + File.separator + "debug.skin";
+        if (("debug").equals(PreferencesUtils.getString(this, "currentSkin"))) {
+            skinDynamic(skinPath, R.color.skin_item_color);
+        } else {
+            defaultSkin(R.color.colorPrimary);
         }
     }
 

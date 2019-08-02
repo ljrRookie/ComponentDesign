@@ -1,1 +1,1 @@
-include ':app', ':order', ':personal', ':common'
+include ':app', ':order', ':personal', ':common', ':skin_packages', ':skin_library'

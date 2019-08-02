@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/netease_bg"
     tools:context=".Order_MainActivity">
 
     <TextView
@@ -11,26 +12,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Order正式环境首页"
-        android:textColor="@android:color/black"
+        android:textColor="@color/skin_textColor"
         android:textSize="30sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginTop="150dp"
+        android:layout_centerHorizontal="true"
+       />
 
     <Button
+        android:id="@+id/tv_btn_main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="jumpApp"
         android:text="首页"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv" />
+        android:background="@color/skin_item_color"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:textColor="@color/skin_textColor"
+        />
 
-    <Button
+
+    <com.ljr.skin_library.views.SkinnableButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:background="@color/skin_item_color"
         android:onClick="jumpPersonal"
         android:text="我的"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv" />
-</android.support.constraint.ConstraintLayout>
+        android:textColor="@color/skin_textColor" />
+</RelativeLayout>
