@@ -5,7 +5,7 @@ println "${rootProject.ext.username}"
 rootProject.ext.username = 163 // 弱类型语言Groovy
 println "${rootProject.ext.username}"
 println "${rootProject.ext.isRelease}"
-
+println "${rootProject.ext.packageNameForAPT}"
 // 赋值与引用
 def androidId = rootProject.ext.androidId
 def appId = rootProject.ext.appId
@@ -26,6 +26,14 @@ android {
         // 切记：不能在android根节点，只能在defaultConfig或buildTypes节点下
         buildConfigField("boolean", "isRelease", String.valueOf(isRelease))
         //gradle 相关配置
+
+        // 在gradle文件中配置选项参数值（用于APT传参接收）
+        // 切记：必须写在defaultConfig节点下
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [moduleName: project.getName(), packageNameForAPT: packageNameForAPT]
+            }
+        }
     /*    // 开启分包
         multiDexEnabled true
         // 设置分包配置
@@ -73,19 +81,9 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    // 标准写法
-    // implementation group: 'com.android.support', name:'appcompat-v7',
-    // 简写
-    // implementation 'com.android.support:appcompat-v7:28.0.0'
-    // 依赖library库
-
-   // implementation support.appcompat
-   // implementation support.recyclerview
-   // implementation support.constraint
-// 依赖第三方库最简洁的方式： 循环引入第三方
-    support.each { k, v -> implementation v }
-
     implementation project(':common') // 公共基础库
+    implementation project(':arouter_annotation') // 注解
+    annotationProcessor project(':arouter_compiler') // 注解处理器
     // 如果是集成化模式，做发布版本时。各个模块都不能独立运行了
     if (isRelease) {
         implementation project(':order')

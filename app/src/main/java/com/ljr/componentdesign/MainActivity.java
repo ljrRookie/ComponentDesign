@@ -2,18 +2,20 @@ package com.ljr.componentdesign;
 
 import android.Manifest;
 import android.content.Intent;
-import android.content.MutableContextWrapper;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.os.Environment;
-import android.support.annotation.RequiresApi;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 
+import com.ljr.arouter_annotation.ARouter;
+import com.ljr.arouter_api.ParameterManager;
+import com.ljr.arouter_api.RouterManager;
 import com.ljr.common.utils.Cons;
 import com.ljr.componentdesign.adapter.MusicAdapter;
 import com.ljr.componentdesign.bean.MusicBean;
@@ -23,22 +25,34 @@ import com.ljr.skin_library.base.SkinActivity;
 import com.ljr.skin_library.utils.PreferencesUtils;
 
 import java.io.File;
-import java.net.MulticastSocket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
+// 小项目或者子模块类重复率不高，可以直接写：path = "/MainActivity"
+@ARouter(path = "/app/MainActivity")
 public class MainActivity extends SkinActivity {
     private String skinPath;
     private RecyclerView mRecyclerView;
     private MusicAdapter mMusicAdapter;
-
+    private static final int Order_MainActivity_REQ = 1000;
+    private static final int Personal_MainActivity_REQ = 1001;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initView();
+        if (BuildConfig.isRelease) {
+            Log.e(Cons.TAG, "当前为：集成化模式，除app可运行，其他子模块都是Android Library");
+        } else {
+            Log.e(Cons.TAG, "当前为：组件化模式，app/order/personal子模块都可独立运行");
+        }
+        // 懒加载方式，跳到哪加载哪个类
+        ParameterManager.getInstance().loadParameter(this);
+    }
+
+    private void initView() {
         mRecyclerView = findViewById(R.id.recycler);
-       mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         // File.separator含义：拼接 /
         skinPath = Environment.getExternalStorageDirectory().getAbsolutePath()
                 + File.separator + "debug.skin";
@@ -50,11 +64,8 @@ public class MainActivity extends SkinActivity {
                 requestPermissions(perms, 200);
             }
         }
-
-
-
         Random rand = new Random();
-       List<MusicBean> musicList = new ArrayList<>();
+        List<MusicBean> musicList = new ArrayList<>();
         musicList.add(new MusicBean("像你这样的人", "毛不易", rand.nextInt(10) + "." + rand.nextInt(10)));
         musicList.add(new MusicBean("演员", "薛之谦", rand.nextInt(10) + "." + rand.nextInt(10)));
         musicList.add(new MusicBean("不要说话", "陈奕迅", rand.nextInt(10) + "." + rand.nextInt(10)));
@@ -73,6 +84,7 @@ public class MainActivity extends SkinActivity {
             defaultSkin(R.color.colorPrimary);
         }
     }
+
     // 换肤按钮（api限制：5.0版本）
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void skinDynamic(View view) {
@@ -87,7 +99,6 @@ public class MainActivity extends SkinActivity {
             long end = System.currentTimeMillis() - start;
             Log.e(Cons.TAG, "换肤耗时（毫秒）：" + end);
             Log.e(Cons.TAG, "-------------end---------------");
-            mMusicAdapter.notifyDataSetChanged();
         }
 
     }
@@ -104,20 +115,51 @@ public class MainActivity extends SkinActivity {
             long end = System.currentTimeMillis() - start;
             Log.e(Cons.TAG, "还原耗时（毫秒）：" + end);
             Log.e(Cons.TAG, "-------------end---------------");
-            mMusicAdapter.notifyDataSetChanged();
         }
 
     }
     public void jumpOrder(View view) {
-        Intent intent = new Intent(this, Order_MainActivity.class);
+        // 1. 第一种跳转
+      /*  Intent intent = new Intent(this, Order_MainActivity.class);
         intent.putExtra("name", "simon");
-        startActivity(intent);
+        startActivity(intent);*/
+      // 2. 第二种跳转
+      //最终集成化模块，所有子模块app/order/personal通过APT生成的类文件都会打包到apk里面，不用担心找不到
+       /* ARouter$$Group$$order group = new ARouter$$Group$$order();
+        Map<String, Class<? extends ARouterLoadPath>> map = group.loadGroup();
+        //通过order组名获取对应路由路径对象
+        Class<? extends ARouterLoadPath> clazz = map.get("order");
+        try {
+            // 类加载动态加载路由路径对象
+            ARouter$$Path$$order path = (ARouter$$Path$$order) clazz.newInstance();
+            Map<String, RouterBean> pathMap = path.loadPath();
+            // 获取目标对象封装
+            RouterBean bean = pathMap.get("/order/Order_MainActivity");
+
+            if (bean != null) {
+                Intent intent = new Intent(this, bean.getClazz());
+                intent.putExtra("name", "simon");
+                startActivity(intent);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }*/
+       //3.路由跳转
+        RouterManager.getInstance()
+                .build("/order/Order_MainActivity")
+                .withString("name", "simon")
+                .navigation(this,Order_MainActivity_REQ);
     }
 
     public void jumpPersonal(View view) {
-        Intent intent = new Intent(this, Personal_MainActivity.class);
-        intent.putExtra("name", "simon");
-        startActivity(intent);
+        Bundle bundle = new Bundle();
+        bundle.putString("name", "simon");
+        bundle.putInt("age", 35);
+        bundle.putBoolean("isSuccess", true);
+        RouterManager.getInstance()
+                .build("/personal/Personal_MainActivity")
+                .withBundle(bundle)
+                .navigation(this, Personal_MainActivity_REQ);
     }
 
     @Override
@@ -125,5 +167,10 @@ public class MainActivity extends SkinActivity {
         return true;
     }
 
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.e(Cons.TAG, "requestCode : "+requestCode);
+        Log.e(Cons.TAG, "resultCode : "+resultCode);
+    }
 }

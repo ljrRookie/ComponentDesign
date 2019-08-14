@@ -1,9 +1,11 @@
 apply plugin: 'com.android.library'
+
 def rootAndroidId = rootProject.ext.androidId
-def appId = rootProject.ext.appId
 def support = rootProject.ext.dependencies
+
 android {
     compileSdkVersion rootAndroidId.compileSdkVersion
+    buildToolsVersion rootAndroidId.buildToolsVersion
 
 
     defaultConfig {
@@ -28,20 +30,11 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    // 标准写法
-    // implementation group: 'com.android.support', name:'appcompat-v7',
-    // 简写
-    // implementation 'com.android.support:appcompat-v7:28.0.0'
-    // 依赖library库
 
-    // implementation support.appcompat
-    // implementation support.recyclerview
-    // implementation support.constraint
-// 依赖第三方库最简洁的方式： 循环引入第三方
-    support.each { k, v -> api v }
-    //换肤
-    api project(path: ':skin_library')
-    // 每个功能子模块既然都要生成APT源文件，而且又是所有模块依赖的公共库
-    // 那么公共基础库依赖路由arouter_api就能向每个子模块提供开放api了
-    api project(':arouter_api') // 路由对外开放api模块
+    implementation support.appcompat
+
+    // 引入注解中RouterBean对象（java项目才有javax.lang包）
+    implementation project(':arouter_annotation')
+
+
 }

@@ -8,7 +8,6 @@ import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.ljr.skin_library.model.SkinCache;
 

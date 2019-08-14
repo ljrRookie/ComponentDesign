@@ -6,6 +6,9 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 
+import com.ljr.arouter_annotation.ARouter;
+import com.ljr.arouter_annotation.Parameter;
+import com.ljr.arouter_api.ParameterManager;
 import com.ljr.common.RecordPathManager;
 import com.ljr.common.base.BaseActivity;
 import com.ljr.common.utils.Cons;
@@ -14,9 +17,16 @@ import com.ljr.skin_library.utils.PreferencesUtils;
 
 import java.io.File;
 
-
+@ARouter(path = "/personal/Personal_MainActivity")
 public class Personal_MainActivity  extends SkinActivity {
+    @Parameter
+    String name;
 
+    @Parameter
+    int age;
+
+    @Parameter
+    boolean isSuccess;
     private String skinPath;
 
     @Override
@@ -29,10 +39,25 @@ public class Personal_MainActivity  extends SkinActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.personal_activity_main);
         Log.e(Cons.TAG, "personal/Personal_MainActivity");
-        if (getIntent() != null) {
+       /* if (getIntent() != null) {
             String content = getIntent().getStringExtra("name");
             Log.e(Cons.TAG, "接收参数值：" + content);
-        }
+        }*/
+        ParameterManager.getInstance().loadParameter(this);
+        Log.e(Cons.TAG, "接收参数值：" + toString());
+        initView();
+    }
+
+    @Override
+    public String toString() {
+        return "Personal_MainActivity{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                ", isSuccess=" + isSuccess +
+                '}';
+    }
+
+    private void initView() {
         // File.separator含义：拼接 /
         skinPath = Environment.getExternalStorageDirectory().getAbsolutePath()
                 + File.separator + "debug.skin";
