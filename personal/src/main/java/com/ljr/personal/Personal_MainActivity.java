@@ -27,6 +27,7 @@ public class Personal_MainActivity  extends SkinActivity {
 
     @Parameter
     boolean isSuccess;
+
     private String skinPath;
 
     @Override

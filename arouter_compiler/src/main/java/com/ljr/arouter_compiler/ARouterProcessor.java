@@ -134,8 +134,11 @@ public class ARouterProcessor extends AbstractProcessor {
     private void parseElements(Set<? extends Element> elements) throws IOException {
         //通过Element工具类，获取Activity,callback类型
         TypeElement activityType = elementUtils.getTypeElement(Constants.ACTIVITY);
+       // TypeElement callType = elementUtils.getTypeElement(Constants.CALL);
+
         //显示类信息（获取被注解节点，类节点）这里也叫自描述 Mirror
         TypeMirror activityMirror = activityType.asType();
+       // TypeMirror callMirror = callType.asType();
 
         //遍历节点
         for (Element element : elements) {
@@ -154,7 +157,9 @@ public class ARouterProcessor extends AbstractProcessor {
             //类型工具类方法isSubtype,相当于instance一样
             if(typeUtils.isSubtype(elementMirror,activityMirror)){
                 bean.setType(RouterBean.Type.ACTIVITY);
-            }else{
+            }/*else if (typeUtils.isSubtype(elementMirror, callMirror)) {
+                bean.setType(RouterBean.Type.CALL);
+            }*/ else{
                 // 不匹配抛出异常，这里谨慎使用！考虑维护问题
                 throw new RuntimeException("@ARouter注解目前仅限用于Activity类之上");
             }

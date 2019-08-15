@@ -17,8 +17,10 @@ public class Constants {
     // Activity全类名
     public static final String ACTIVITY = "android.app.Activity";
     // 包名前缀封装
-    static final String BASE_PACKAGE = "com.ljr.arouter_api";
+    public static final String BASE_PACKAGE = "com.ljr.arouter_api";
 
+    // RouterManager类名
+    public static final String ROUTER_MANAGER = "RouterManager";
 
     // 路由组Group加载接口
     public static final String AROUTE_GROUP = BASE_PACKAGE + ".core.ARouterLoadGroup";
@@ -26,7 +28,8 @@ public class Constants {
     public static final String AROUTE_PATH = BASE_PACKAGE + ".core.ARouterLoadPath";
     // 获取参数，加载接口
     public static final String PARAMETER_LOAD = BASE_PACKAGE + ".core.ParameterLoad";
-
+    // 跨模块业务，回调接口
+    public static final String CALL = BASE_PACKAGE + ".core.Call";
 
     // 路由组Group，参数名
     public static final String GROUP_PARAMETER_NAME = "groupMap";

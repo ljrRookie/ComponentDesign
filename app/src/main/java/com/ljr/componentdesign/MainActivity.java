@@ -14,8 +14,11 @@ import android.util.Log;
 import android.view.View;
 
 import com.ljr.arouter_annotation.ARouter;
+import com.ljr.arouter_annotation.Parameter;
 import com.ljr.arouter_api.ParameterManager;
 import com.ljr.arouter_api.RouterManager;
+import com.ljr.common.user.BaseUser;
+import com.ljr.common.user.IUser;
 import com.ljr.common.utils.Cons;
 import com.ljr.componentdesign.adapter.MusicAdapter;
 import com.ljr.componentdesign.bean.MusicBean;
@@ -36,6 +39,8 @@ public class MainActivity extends SkinActivity {
     private MusicAdapter mMusicAdapter;
     private static final int Order_MainActivity_REQ = 1000;
     private static final int Personal_MainActivity_REQ = 1001;
+   /* @Parameter(name = "/personal/getUserInfo")
+    IUser iUser;*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +53,12 @@ public class MainActivity extends SkinActivity {
         }
         // 懒加载方式，跳到哪加载哪个类
         ParameterManager.getInstance().loadParameter(this);
+      /*  BaseUser userInfo = iUser.getUserInfo();
+        if (userInfo != null) {
+            Log.e(Cons.TAG, userInfo.getName() + " / "
+                    + userInfo.getAccount() + " / "
+                    + userInfo.getPassword());
+        }*/
     }
 
     private void initView() {
