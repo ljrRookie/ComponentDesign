@@ -10,7 +10,10 @@ import android.view.View;
 import com.ljr.arouter_annotation.ARouter;
 import com.ljr.arouter_annotation.Parameter;
 import com.ljr.arouter_api.ParameterManager;
+import com.ljr.arouter_api.RouterManager;
 import com.ljr.common.RecordPathManager;
+import com.ljr.common.user.BaseUser;
+import com.ljr.common.user.IUser;
 import com.ljr.common.utils.Cons;
 import com.ljr.skin_library.base.SkinActivity;
 import com.ljr.skin_library.utils.PreferencesUtils;
@@ -22,6 +25,9 @@ public class Order_MainActivity extends SkinActivity {
     @Parameter
     String name;
     private String skinPath;
+
+    @Parameter(name = "/app/getUserInfo")
+    IUser iUser;
 
     @Override
     protected boolean openChangeSkin() {
@@ -36,9 +42,10 @@ public class Order_MainActivity extends SkinActivity {
         Log.e(Cons.TAG, "order/Order_MainActivity");
 
        /* if (getIntent() != null) {
+       原始传参
           *//*  String content = getIntent().getStringExtra("name");
             Log.e(Cons.TAG, "接收参数值：" + content);*//*
-
+        路由传参
             new Order_MainActivity$$Parameter().loadParameter(this);
             Log.e(Cons.TAG, "接收参数值：" + name);
         }*/
@@ -46,7 +53,12 @@ public class Order_MainActivity extends SkinActivity {
         ParameterManager.getInstance().loadParameter(this);
         Log.e(Cons.TAG, "接收参数值：" + name);
         initView();
-
+        BaseUser userInfo = iUser.getUserInfo();
+        if (userInfo != null) {
+            Log.e(Cons.TAG, userInfo.getName() + " / "
+                    + userInfo.getAccount() + " / "
+                    + userInfo.getPassword());
+        }
     }
 
     private void initView() {
@@ -81,7 +93,10 @@ public class Order_MainActivity extends SkinActivity {
         Intent intent = new Intent(this, targetClass);
         intent.putExtra("name", "simon");
         startActivity(intent);*/
-
+        RouterManager.getInstance()
+                .build("/app/MainActivity")
+                .withResultString("call", "I'am comeback!")
+                .navigation(this);
     }
 
     public void jumpPersonal(View view) {
@@ -95,7 +110,7 @@ public class Order_MainActivity extends SkinActivity {
             e.printStackTrace();
         }*/
 
-        Class<?> targetClass = RecordPathManager.getTargetClass("personal", "Personal_MainActivity");
+     /*   Class<?> targetClass = RecordPathManager.getTargetClass("personal", "Personal_MainActivity");
 
         if (targetClass == null) {
             Log.e(Cons.TAG, "获取跳转targetClass失败！");
@@ -104,6 +119,10 @@ public class Order_MainActivity extends SkinActivity {
 
         Intent intent = new Intent(this, targetClass);
         intent.putExtra("name", "simon");
-        startActivity(intent);
+        startActivity(intent);*/
+        RouterManager.getInstance()
+                .build("/personal/Personal_MainActivity")
+                .withString("name", "simon")
+                .navigation(this);
     }
 }

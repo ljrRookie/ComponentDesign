@@ -134,11 +134,11 @@ public class ARouterProcessor extends AbstractProcessor {
     private void parseElements(Set<? extends Element> elements) throws IOException {
         //通过Element工具类，获取Activity,callback类型
         TypeElement activityType = elementUtils.getTypeElement(Constants.ACTIVITY);
-       // TypeElement callType = elementUtils.getTypeElement(Constants.CALL);
+        TypeElement callType = elementUtils.getTypeElement(Constants.CALL);
 
         //显示类信息（获取被注解节点，类节点）这里也叫自描述 Mirror
         TypeMirror activityMirror = activityType.asType();
-       // TypeMirror callMirror = callType.asType();
+        TypeMirror callMirror = callType.asType();
 
         //遍历节点
         for (Element element : elements) {
@@ -157,14 +157,15 @@ public class ARouterProcessor extends AbstractProcessor {
             //类型工具类方法isSubtype,相当于instance一样
             if(typeUtils.isSubtype(elementMirror,activityMirror)){
                 bean.setType(RouterBean.Type.ACTIVITY);
-            }/*else if (typeUtils.isSubtype(elementMirror, callMirror)) {
+            }else if (typeUtils.isSubtype(elementMirror, callMirror)) {
                 bean.setType(RouterBean.Type.CALL);
-            }*/ else{
+            } else{
                 // 不匹配抛出异常，这里谨慎使用！考虑维护问题
                 throw new RuntimeException("@ARouter注解目前仅限用于Activity类之上");
             }
             //赋值临时map存储，用来存放路由组Group对应的详细Path类对象
             valueOfPathMap(bean);
+        }
             //routerMap遍历后，用来生成类文件
             // 获取ARouterLoadGroup、ARouterLoadPath类型（生成类文件需要实现的接口）
             TypeElement groupLoadType = elementUtils.getTypeElement(Constants.AROUTE_GROUP);
@@ -175,7 +176,7 @@ public class ARouterProcessor extends AbstractProcessor {
 
             //第二步：生成路由组Group类文件(没有第一步，取不到类文件)，如：ARouter$$Group$$app
             createGroupFile(groupLoadType, pathLoadType);
-        }
+
     }
     /**
      * 生成路由组Group文件，如：ARouter$$Group$$app

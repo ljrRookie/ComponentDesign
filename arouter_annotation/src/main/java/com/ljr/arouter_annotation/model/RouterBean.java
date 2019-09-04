@@ -23,9 +23,7 @@ public class RouterBean {
     private String group;
 
     private RouterBean(Builder builder){
-        this.type = builder.type;
         this.element = builder.element;
-        this.clazz = builder.clazz;
         this.path = builder.path;
         this.group = builder.group;
     }
@@ -85,31 +83,22 @@ public class RouterBean {
      * 构建者模式
      */
     public static class Builder{
-        //枚举类型：Activity
-        private Type type;
+
         // 类节点
         private Element element;
-        // 注解使用的类对象
-        private Class<?> clazz;
+
         // 路由地址
         private String path;
         // 路由组
         private String group;
 
-        public Builder setType(Type type) {
-            this.type = type;
-            return this;
-        }
+
 
         public Builder setElement(Element element) {
             this.element = element;
             return this;
         }
 
-        public Builder setClazz(Class<?> clazz) {
-            this.clazz = clazz;
-            return this;
-        }
 
         public Builder setPath(String path) {
             this.path = path;

@@ -12,11 +12,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.ljr.arouter_annotation.ARouter;
 import com.ljr.arouter_annotation.Parameter;
 import com.ljr.arouter_api.ParameterManager;
 import com.ljr.arouter_api.RouterManager;
+import com.ljr.common.drawable_file.OrderDrawable;
 import com.ljr.common.user.BaseUser;
 import com.ljr.common.user.IUser;
 import com.ljr.common.utils.Cons;
@@ -41,6 +43,9 @@ public class MainActivity extends SkinActivity {
     private static final int Personal_MainActivity_REQ = 1001;
    /* @Parameter(name = "/personal/getUserInfo")
     IUser iUser;*/
+
+    @Parameter(name = "/order/getDrawable")
+    OrderDrawable orderDrawable;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +64,9 @@ public class MainActivity extends SkinActivity {
                     + userInfo.getAccount() + " / "
                     + userInfo.getPassword());
         }*/
+        int drawableId = orderDrawable.getDrawable();
+        ImageView img = findViewById(R.id.iv_img);
+        img.setImageResource(drawableId);
     }
 
     private void initView() {

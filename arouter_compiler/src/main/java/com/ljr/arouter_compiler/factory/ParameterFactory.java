@@ -40,14 +40,16 @@ public class ParameterFactory {
         this.messager = builder.messager;
         this.className = builder.className;
         typeUtils = builder.typeUtils;
+
         //通过方法参数体构建方法体 ： public void loadParameter(Object target){}
         methodBuilder = MethodSpec.methodBuilder(Constants.PARAMETER_METHOD_NAME)
                 .addAnnotation(Override.class)
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(builder.parameterSpec);
-     /*   this.callMirror = builder.elementUtils
+
+        this.callMirror = builder.elementUtils
                 .getTypeElement(Constants.CALL)
-                .asType();*/
+                .asType();
     }
 
     /**
